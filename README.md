@@ -1,1 +1,1 @@
-# nimble-miner-public
+# nimble-worker-public

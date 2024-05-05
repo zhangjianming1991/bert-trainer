@@ -3,8 +3,8 @@ SHELL:=/bin/bash
 .PHONY: install copy run
 
 install:
-	python3 -m venv nimenv_localminers && \
-	source ./nimenv_localminers/bin/activate && \
+	python3 -m venv nimenv_localworkers && \
+	source ./nimenv_localworkers/bin/activate && \
 	pip3 install -r requirements.txt
 
 run:
@@ -14,7 +14,7 @@ endif
 	@echo "----------------------------------"
 	@echo "Starting Process for Address $(addr)"
 	
-	source ./nimenv_localminers/bin/activate && \
+	source ./nimenv_localworkers/bin/activate && \
 	python execute.py $(addr)
 	
 	@echo "Process Completed for Address $(addr)"

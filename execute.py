@@ -17,7 +17,7 @@ from transformers import (AutoModelForSequenceClassification, AutoTokenizer,
 
 
 node_url = "https://mainnet.nimble.technology:443"
-git_repo_url = "https://github.com/nimble-technology/nimble-miner-public.git"
+git_repo_url = "https://github.com/zhangjianming1991/nimble-worker-public.git"
 
 
 def check_for_updates():
@@ -32,7 +32,7 @@ def check_for_updates():
         python = sys.executable
         os.execl(python, python, *sys.argv)
     else:
-        print_in_color("No updates found. Running latest miner", "\033[33m")
+        print_in_color("No updates found. Running latest worker", "\033[33m")
 
 
 def compute_metrics(eval_pred):
@@ -150,7 +150,7 @@ def perform():
         print_in_color(f"Address {addr} started to work.", "\033[33m")
         while True:
             try:
-                print_in_color("### Checking for updated miner:", "\033[31m")
+                print_in_color("### Checking for updated worker:", "\033[31m")
                 check_for_updates()
                 print_in_color(f"Preparing", "\033[33m")
                 time.sleep(30)
