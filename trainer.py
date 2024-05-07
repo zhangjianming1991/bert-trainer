@@ -1,9 +1,7 @@
-"""This module contains the code to execute the task."""
-
 import json
 import sys
-import git
 import os
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 import time
 import shutil
 import numpy as np
@@ -14,25 +12,6 @@ now = datetime.now()
 from datasets import load_dataset
 from transformers import (AutoModelForSequenceClassification, AutoTokenizer,
                           Trainer, TrainingArguments)
-
-
-node_url = "https://mainnet.nimble.technology:443"
-git_repo_url = "https://github.com/zhangjianming1991/nimble-worker-public.git"
-
-
-def check_for_updates():
-    """Check for updates in the Git repository."""
-    repo = git.Repo(search_parent_directories=True)
-    repo.remotes.origin.fetch()
-    current_commit = repo.head.commit
-    repo.remotes.origin.pull()
-    new_commit = repo.head.commit
-    if current_commit != new_commit:
-        print_in_color("Updated the code. Restarting...", "\033[33m")
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
-    else:
-        print_in_color("No updates found. Running latest worker", "\033[33m")
 
 
 def compute_metrics(eval_pred):
@@ -107,7 +86,7 @@ def print_in_color(text, color_code):
 
 def register_particle(addr):
     """This function inits the particle."""
-    url = f"{node_url}/register_particle"
+    url = f"https://mainnet.nimble.technology:443/register_particle"
     response = requests.post(url, timeout=10, json={"address": addr})
     print_in_color(response.status_code, "\033[32m")
     if response.status_code == 400:
@@ -122,7 +101,7 @@ def complete_task(wallet_address, max_retries=5, retry_delay=10):
     retries = 0
     while retries < max_retries:
         try:
-            url = f"{node_url}/complete_task"
+            url = f"https://mainnet.nimble.technology:443/complete_task"
             files = {
                 "file1": open("my_model/config.json", "rb"),
                 "file2": open("my_model/training_args.bin", "rb"),
@@ -130,7 +109,7 @@ def complete_task(wallet_address, max_retries=5, retry_delay=10):
             }
             json_data = json.dumps({"address": wallet_address})
             files["r"] = (None, json_data, "application/json")
-            response = requests.post(url, files=files, timeout=600)
+            response = requests.post(url, files=files, timeout=1200)
             if response.status_code == 200:
                 return response.json()
             else:
@@ -150,8 +129,6 @@ def perform():
         print_in_color(f"Address {addr} started to work.", "\033[33m")
         while True:
             try:
-                print_in_color("### Checking for updated worker:", "\033[31m")
-                check_for_updates()
                 print_in_color(f"Preparing", "\033[33m")
                 time.sleep(30)
                 task_args = register_particle(addr)
